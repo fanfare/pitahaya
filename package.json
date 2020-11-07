@@ -1,0 +1,29 @@
+{
+  "name": "pitahaya",
+  "version": "0.0.6",
+  "description": "Encode and decode binary data over a video channel",
+  "main": "bin/pitahaya.js",
+  "bin": {
+    "pitahaya": "./bin/pitahaya.js"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "youtube"
+  ],
+  "author": "Rene Ae",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fanfare/pitahaya.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fanfare/pitahaya/issues"
+  },
+  "homepage": "https://github.com/fanfare/pitahaya#readme",
+  "dependencies": {}
+}

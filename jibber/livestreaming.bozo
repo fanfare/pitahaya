@@ -7,7 +7,7 @@ Requires: [ffmpeg](https://ffmpeg.org/download.html), [node.js](https://nodejs.o
 If running windows, install [cygwin](https://cygwin.com) to run the commands on this page.
 ~~~
 #### Encoding
-The following command will take the file [audio.flac](audio.flac) and live stream it to youtube as a 128 kbps MP3 in real time over the video channel. The live stream will have no audible sound in the audio channel. Be sure to replace the string `abcd-efgh-ijkl-mnop-qrst` with your youtube live streaming key found on your [live dashboard](http://youtube.com/live_dashboard) page.
+The following command will take the file [audio.flac](https://github.com/fanfare/pitahaya/raw/master/au/audio.flac) and live stream it to youtube as a 128 kbps MP3 in real time over the video channel. The live stream will have no audible sound in the audio channel. Be sure to replace the string `abcd-efgh-ijkl-mnop-qrst` with your youtube live streaming key found on your [live dashboard](http://youtube.com/live_dashboard) page.
 > ffmpeg -nostats -loglevel 0 \
 > -re -i audio.flac \
 > -f s16le -acodec pcm_s16le -ar 44100 -ac 2 - \

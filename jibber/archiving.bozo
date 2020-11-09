@@ -7,7 +7,7 @@ Requires: [ffmpeg](https://ffmpeg.org/download.html), [node.js](https://nodejs.o
 If running windows, get [cygwin](https://cygwin.com) to run the commands.
 ~~~
 #### Encoding
-The following command will convert the uncompressed file [audio.flac](audio.flac) into the video `output.mp4`. The video will contain an uncompressed copy of the .flac file in the video channel, and an audible copy of the audio in the audio channel.
+The following command will convert the uncompressed file [audio.flac](https://github.com/fanfare/pitahaya/raw/master/au/audio.flac) into the video `output.mp4`. The video will contain an uncompressed copy of the .flac file in the video channel, and an audible copy of the audio in the audio channel.
 > ffmpeg -i audio.flac \
 > -f s16le -acodec pcm_s16le \
 > -ar 44100 -ac 2 - \

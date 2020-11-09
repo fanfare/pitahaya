@@ -14,4 +14,4 @@ Notes: Because of some browser limitations, the bookmarklet is somewhat unpracti
 Be sure not to tab away or minimize the browser when a video is playing -- that will cause the decoding mechanism to stop working.
 You can drag a tab playing the youtube video out to its own dedicated browser window and hide it off screen if necessary.
 ~~~
-The bookmarklet has been tested on both chrome and firefox on windows. The [source](http://github.com/fanfare/pitahaya/bookmarklet) is also available.
+The bookmarklet has been tested on both chrome and firefox on windows. The [source](https://github.com/fanfare/pitahaya/tree/master/bookmarklet) is also available.

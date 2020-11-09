@@ -1,0 +1,17 @@
+# |https://f001.backblazeb2.com/file/flower/anim.gif Pitahaya
+~~~
+[back home](index.html)
+~~~
+### Pitahaya bookmarklet
+~~~
+Drag the following bookmarklet [Pitahaya v.0](js) ← to your bookmark bar and try it on this youtube video: [https://youtu.be/GyATVQ8Y57Y](https://youtu.be/GyATVQ8Y57Y).
+~~~
+When you are on any youtube video that is playing an mp3-encoded pitahaya video (the maximum resolution of the video will be 360p) click the bookmark and
+a little player will open in the top left corner.
+Click play and it will automatically begin to decode and play the video.
+~~~
+Notes: Because of some browser limitations, the bookmarklet is somewhat unpractical for casual use, and only mp3 decoding is supported for now.
+Be sure not to tab away or minimize the browser when a video is playing -- that will cause the decoding mechanism to stop working.
+You can drag a tab playing the youtube video out to its own dedicated browser window and hide it off screen if necessary.
+~~~
+The bookmarklet has been tested on both chrome and firefox on windows. The [source](http://github.com/fanfare/pitahaya/bookmarklet) is also available.

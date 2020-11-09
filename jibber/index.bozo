@@ -1,0 +1,26 @@
+# |https://f001.backblazeb2.com/file/flower/anim.gif Pitahaya
+~~~
+Pitahaya is a node.js script which demonstrates encoding and decoding binary data over a video channel.
+~~~
+### Download Pitahaya
+First install [node.js](https://nodejs.org/en/). Then install pitahaya via
+> npm install -g pitahaya
+Or get the source [here](http://github.com/fanfare/pitahaya).
+~~~
+If you want to quickly try it out without installing anything, a [bookmarklet](bookmarklet.html) is available
+which will decode Pitahaya-encoded videos and play the audio inside the browser in real time.
+~~~
+### [Live streaming](livestreaming.html)
+With Pitahaya, you can transmit audio data in real time over the video channel of a live stream.
+The video will appear silent to anyone not decoding the stream with Pitahaya.
+~~~
+### [Archiving uncompressed audio](archiving.html)
+Suppose you want to release some uncompressed music on youtube. There really isn't a way to do this natively on Youtube -- the
+music in the audio channel will be compressed once you upload your video file. With Pitahaya, you can use the video channel
+to store the uncompressed audio data. A listener can listen to your track on youtube, and if they like it and want a hard copy,
+they can download the video with youtube-dl as normal, but can now extract the uncompressed audio from the video channel with pitahaya,
+getting the music in its original quality.
+~~~
+The current version of Pitahaya is `0.1.0`
+\
+*Page last updated November 8, 2020 by [fanfare](http://jollo.org/LNT/home/fanfare)*

@@ -1,88 +1,93 @@
-;let optical = (function() {
+;
+let optical = (function() {
+  
+  // http://jollo.org/LNT/doc/pitahaya
+  
+  // function eliminatemp3junkbytes() {
+  //   
+  //   // discard unplayable mp3 data
+  //   
+  //   const elimination = (function() {
+  // 
+  //     let s = []
+  //     let segments = []
+  //     let pattern = ""
+  //     let sync = false
+  //     let segment = ""
+  // 
+  //     const parse = function(mp3bytearray) {
+  // 
+  //       s.push(...mp3bytearray)
+  //       if (s.length < 2500) {
+  //         return null
+  //       }
+  //       let seekable = true
+  //       while (seekable) {
+  //         for (let i=0;i<s.length-900;i++) {
+  //           if (s[i] !== 0xFF || s[i+1] !== 0xFB 
+  //           || (s[i+2] !== 0x92 && s[i+2] !== 0x90)) {
+  //             continue
+  //           }
+  //           let es = s[i+2] === 0x92 ? 418 : 417
+  //           if (s[i+es] !== 0xFF || s[i+es+1] !== 0xFB
+  //           || (s[i+es+2] !== 0x92 && s[i+es+2] !== 0x90)) {
+  //             continue
+  //           }
+  //           let ys = s[i+es+2] === 0x92 ? 418 : 417
+  //           if (s[i+es+ys] !== 0xFF || s[i+es+ys+1] !== 0xFB
+  //           || (s[i+es+ys+2] !== 0x92 && s[i+es+ys+2] !== 0x90)) {
+  //             continue
+  //           }
+  //           sync = true
+  //           s.splice(0,i)
+  //           segment = s.splice(0,es)
+  //           segments.push(...segment)
+  //           break
+  //         }
+  //         if (!sync) {
+  //           s.splice(0,s.length-900)
+  //         }
+  //         if (s.length < 900) {
+  //           seekable = false
+  //         }
+  //       }
+  //       if (segments.length > 16000) {
+  //         let response = []
+  //         response.push(...segments)
+  //         sync = false
+  //         segments = []
+  //         segment = ""
+  //         return response
+  //       }
+  //       else {
+  //         return null
+  //       }
+  //     }
+  //     return {
+  //       parse
+  //     }
+  //   })();
+  // 
+  //   self.onmessage = function (event) {
+  //     let audiofragment = event.data
+  //     let mp3 = elimination.parse(audiofragment)
+  //     if (mp3) {
+  //       mp3 = Uint8Array.from(mp3)
+  //       postMessage(mp3)
+  //     }
+  //   }
+  // 
+  // }
 
-  function eliminatemp3junkbytes() {
-    
-    const elimination = (function() {
-
-      let s = []
-      let segments = []
-      let pattern = ""
-      let sync = false
-      let segment = ""
-
-      const parse = function(mp3bytearray) {
-
-        s.push(...mp3bytearray)
-        if (s.length < 2500) {
-          return null
-        }
-        let seekable = true
-        let skippedbytes = 0
-        while (seekable) {
-          for (let i=0;i<s.length-900;i++) {
-            if (s[i] !== 0xFF || s[i+1] !== 0xFB 
-            || (s[i+2] !== 0x92 && s[i+2] !== 0x90)) {
-              skippedbytes++
-              continue
-            }
-            let es = s[i+2] === 0x92 ? 418 : 417
-            if (s[i+es] !== 0xFF || s[i+es+1] !== 0xFB
-            || (s[i+es+2] !== 0x92 && s[i+es+2] !== 0x90)) {
-              skippedbytes++
-              continue
-            }
-            let ys = s[i+es+2] === 0x92 ? 418 : 417
-            if (s[i+es+ys] !== 0xFF || s[i+es+ys+1] !== 0xFB
-            || (s[i+es+ys+2] !== 0x92 && s[i+es+ys+2] !== 0x90)) {
-              skippedbytes++
-              continue
-            }
-            sync = true
-            s.splice(0,i)
-            segment = s.splice(0,es)
-            segments.push(...segment)
-            break
-          }
-          if (!sync) {
-            s.splice(0,s.length-900)
-          }
-          if (s.length < 900) {
-            seekable = false
-          }
-        }
-        if (segments.length > 16000) {
-          let response = []
-          response.push(...segments)
-          sync = false
-          segments = []
-          segment = ""
-          return response
-        }
-        else {
-          return null
-        }
-      }
-      return {
-        parse
-      }
-    })();
-
-    self.onmessage = function (event) {
-      let audiofragment = event.data
-      let mp3 = elimination.parse(audiofragment)
-      if (mp3) {
-        mp3 = Uint8Array.from(mp3)
-        postMessage(mp3)
-      }
-    }
-
-  }
-
-  let elstr = eliminatemp3junkbytes.toString()
-  elstr = elstr.substring(elstr.indexOf("{")+1, elstr.lastIndexOf("}"))
+  // let elstr = eliminatemp3junkbytes.toString()
+  // elstr = elstr.substring(elstr.indexOf("{")+1, elstr.lastIndexOf("}"))
 
   function encapsulatemp3insidemp4() {
-    let showlogs = false
+    
+    // firefox mediasource extensions support
+    // encapsulate cbr 128 kbps mp3 inside audio/mp4 
+    // LNT http://jollo.org
+
     const encapsulation = (function() {
       function bumpsum(prev, pad, inc) {
         let hex = prev
@@ -208,7 +213,6 @@
           0x01, 0xA2, 0x00, 0x00, 0x01, 0xA2, 0x00, 0x00, 0x3F, 0xB4,
           0x6D, 0x64, 0x61, 0x74                                     
         ]
-
         let pxframe = ""
         let pxgranular = ""
 
@@ -249,29 +253,27 @@
       let segment = ""
       
       const interlace = function(mp3bytearray) {
+
         s.push(...mp3bytearray)
         if (s.length < 2500) {
           return null
         }
         let seekable = true
-        let skippedbytes = 0
         while (seekable) {
           for (let i=0;i<s.length-900;i++) {
+            // seek into the future
             if (s[i] !== 0xFF || s[i+1] !== 0xFB 
             || (s[i+2] !== 0x92 && s[i+2] !== 0x90)) {
-              skippedbytes++
               continue
             }
             let es = s[i+2] === 0x92 ? 418 : 417
             if (s[i+es] !== 0xFF || s[i+es+1] !== 0xFB
             || (s[i+es+2] !== 0x92 && s[i+es+2] !== 0x90)) {
-              skippedbytes++
               continue
             }
             let ys = s[i+es+2] === 0x92 ? 418 : 417
             if (s[i+es+ys] !== 0xFF || s[i+es+ys+1] !== 0xFB
             || (s[i+es+ys+2] !== 0x92 && s[i+es+ys+2] !== 0x90)) {
-              skippedbytes++
               continue
             }
             sync = true
@@ -421,16 +423,22 @@
         }
         let booksr
         let booksum
+        // average both left right
         if (collection === 1) {
           booksr = xpass(0,2)
+          booksum = booksr < blackwhitergbthresholdtwo
         }
+        // left only
         else if (collection === 2) {
           booksr = xpass(1,2)
+          booksum = booksr < blackwhitergbthreshold
         }
+        // right only
         else if (collection === 3) {
           booksr = xpass(0,1)
+          booksum = booksr < blackwhitergbthreshold
         }
-        booksum = booksr < blackwhitergbthresholdtwo
+        
         if (booksum) {
           return 1
         }
@@ -551,9 +559,7 @@
         }
       }
       abmode = ofvstatus
-      
       let ubxl = usablebuffer.length
-      
       var lastframebitstatus = gatheratpoint(50,0,0,1)
       
       if (lastframebitstatus == 1) {
@@ -636,6 +642,7 @@
         ubxl = bitspace/8
         lastframebitstatus = 0
       }
+      
       return [responsearray, vparams]
     }
    
@@ -674,7 +681,6 @@
       return null
     }
   }
-  
   var secinv = document.querySelector('#secondary-inner')
   if (secinv) {
     secinv.remove()
@@ -683,14 +689,14 @@
   if (commentsv) {
     commentsv.remove()
   }
-  document.body.insertAdjacentHTML(`afterbegin`, `<style>#pitahayax div{box-sizing:border-box;} #togglebutton.pause::before { content:''; width:3px; height:10px; top:11px; left:12px; background:#0f9; position:absolute; display:inline-block; } #togglebutton.pause::after { content:''; width:3px; height:10px; top:11px; left:18px; background:#0f9; position:absolute; display:inline-block } #pitahayax ::selection { background: #0f9 } #pitahayax ::-moz-selection { background: #0f9 } #pitahayax .unused {display:none!important}</style><div id="pitahayax" style="background:black;position:fixed;top:0;left:0;z-index:99999999;display:flex;flex-direction:row;padding:4px;"><audio id="xaudio" controls style="width:150px;height:30px;display:none"></audio><div id="togglebutton" class="" style="cursor:pointer;margin-right:4px;color:#0f9;display:flex;border:1px solid #0f9;min-width:25px;min-height:24px;max-height:24px;line-height:15px;font-size:13px;align-items:center;justify-content:center;user-select:none;padding-left:1px;">&#9654;</div><div style="display:flex;border:1px solid #0f9;min-width:150px;max-width:150px;min-height:24px;font-size:11px;font-family:consolas;color:#0f9;align-items:center;padding-left:5px;user-select:none;font-weight:500;position:relative" id="attxdisplay">Pitahaya v.0</div><div class="unused" style="margin-left:5px;display:flex;border:1px solid #0f9;min-width:86px;max-width:86px;min-height:24px;font-size:11px;font-family:consolas;color:#0f9;align-items:center;padding-left:5px;user-select:none;font-weight:500"><input style="background:black;border:none;color:#0f9;width:70px;font-size:11px;font-family:consolas" placeholder="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /></div></div>`)
+  document.body.insertAdjacentHTML(`afterbegin`, `<style>#pitahayax div{box-sizing:border-box;} #togglebutton.pause::before { content:''; width:3px; height:10px; top:11px; left:12px; background:#0f9; position:absolute; display:inline-block; } #togglebutton.pause::after { content:''; width:3px; height:10px; top:11px; left:18px; background:#0f9; position:absolute; display:inline-block } #pitahayax ::selection { background: #0f9 } #pitahayax ::-moz-selection { background: #0f9 } #pitahayax .unused {display:none!important}</style><div id="pitahayax" style="background:black;position:fixed;top:0;left:0;z-index:99999999;display:flex;flex-direction:row;padding:4px;"><audio id="xaudio" controls style="width:150px;height:30px;display:none"></audio><div id="togglebutton" class="" style="cursor:pointer;margin-right:4px;color:#0f9;display:flex;border:1px solid #0f9;min-width:25px;min-height:24px;max-height:24px;line-height:15px;font-size:15px;font-family:monospace;align-items:center;justify-content:center;user-select:none;padding-left:1px;">&#9654;</div><div style="display:flex;border:1px solid #0f9;min-width:150px;max-width:150px;min-height:24px;font-size:11px;font-family:consolas;color:#0f9;align-items:center;padding-left:5px;user-select:none;font-weight:500;position:relative" id="attxdisplay">Pitahaya v.0</div><div class="unused" style="margin-left:5px;display:flex;border:1px solid #0f9;min-width:86px;max-width:86px;min-height:24px;font-size:11px;font-family:consolas;color:#0f9;align-items:center;padding-left:5px;user-select:none;font-weight:500"><input style="background:black;border:none;color:#0f9;width:70px;font-size:11px;font-family:consolas" placeholder="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /></div></div>`)
   
   let video
   let audio
   var videoframedecoder = null
   var clock = null
   var encapsulation = null
-  var elimination = null
+  // var elimination = null
 
   var canvas = document.createElement('canvas')
   canvas.width = 640
@@ -767,7 +773,8 @@
         switch(event.data[1].mediatype) {
           case 0: {
             if (mime === "audio/mpeg") {
-              elimination.postMessage(event.data[0])
+              // elimination.postMessage(event.data[0])
+              sourceBuffer.appendBuffer(event.data.buffer)
             }
             else {
               encapsulation.postMessage(event.data[0])
@@ -775,6 +782,9 @@
             break
           }
           case 1: {
+            break
+          }
+          default: {
             break
           }
         }
@@ -786,13 +796,13 @@
       encapsulation.onmessage = function (event) {
         sourceBuffer.appendBuffer(event.data.buffer)
       }
-      if (elimination == null) {
-        var elblob = new Blob([elstr], {type: "application/javascript"})
-        elimination = new Worker(URL.createObjectURL(elblob))
-      }
-      elimination.onmessage = function (event) {
-        sourceBuffer.appendBuffer(event.data.buffer)
-      }
+      // if (elimination == null) {
+      //   var elblob = new Blob([elstr], {type: "application/javascript"})
+      //   elimination = new Worker(URL.createObjectURL(elblob))
+      // }
+      // elimination.onmessage = function (event) {
+      //   sourceBuffer.appendBuffer(event.data.buffer)
+      // }
       var framerate = 16
       var cycletimeoutms = 1000 / framerate
       var expected
@@ -849,4 +859,5 @@
   togglebutton.addEventListener("click", toggle)
   return null
 
-})();
+})()
+;

@@ -7,7 +7,8 @@ First install [node.js](https://nodejs.org/en/). Then install pitahaya via
 > npm install -g pitahaya
 Or get the source [here](http://github.com/fanfare/pitahaya).
 ~~~
-If you want to quickly try it out without installing anything, a [bookmarklet](bookmarklet.html) is available
+### [Bookmarklet](bookmarklet.html)
+If you want to quickly try it out without installing anything, a bookmarklet is available
 which will decode Pitahaya-encoded videos and play the audio inside the browser in real time.
 ~~~
 ### [Live streaming](livestreaming.html)

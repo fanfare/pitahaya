@@ -689,7 +689,7 @@ let optical = (function() {
   if (commentsv) {
     commentsv.remove()
   }
-  document.body.insertAdjacentHTML(`afterbegin`, `<style>#pitahayax div{box-sizing:border-box;} #togglebutton.pause::before { content:''; width:3px; height:10px; top:11px; left:12px; background:#0f9; position:absolute; display:inline-block; } #togglebutton.pause::after { content:''; width:3px; height:10px; top:11px; left:18px; background:#0f9; position:absolute; display:inline-block } #pitahayax ::selection { background: #0f9 } #pitahayax ::-moz-selection { background: #0f9 } #pitahayax .unused {display:none!important}</style><div id="pitahayax" style="background:black;position:fixed;top:0;left:0;z-index:99999999;display:flex;flex-direction:row;padding:4px;"><audio id="xaudio" controls style="width:150px;height:30px;display:none"></audio><div id="togglebutton" class="" style="cursor:pointer;margin-right:4px;color:#0f9;display:flex;border:1px solid #0f9;min-width:25px;min-height:24px;max-height:24px;line-height:15px;font-size:15px;font-family:monospace;align-items:center;justify-content:center;user-select:none;padding-left:1px;">&#9654;</div><div style="display:flex;border:1px solid #0f9;min-width:150px;max-width:150px;min-height:24px;font-size:11px;font-family:consolas;color:#0f9;align-items:center;padding-left:5px;user-select:none;font-weight:500;position:relative" id="attxdisplay">Pitahaya v.0</div><div class="unused" style="margin-left:5px;display:flex;border:1px solid #0f9;min-width:86px;max-width:86px;min-height:24px;font-size:11px;font-family:consolas;color:#0f9;align-items:center;padding-left:5px;user-select:none;font-weight:500"><input style="background:black;border:none;color:#0f9;width:70px;font-size:11px;font-family:consolas" placeholder="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /></div></div>`)
+  document.body.insertAdjacentHTML(`afterbegin`, `<style>#pitahayax div { box-sizing:border-box;} #pitahayax ::selection { background: #0f9 } #pitahayax ::-moz-selection { background: #0f9 } #pitahayax .unused {display:none!important}</style><div id="pitahayax" style="background:black;position:fixed;top:0;left:0;z-index:99999999;display:flex;flex-direction:row;padding:4px;"><audio id="xaudio" controls style="width:150px;height:30px;display:none"></audio><div id="togglebutton" class="" style="cursor:pointer;margin-right:4px;color:#0f9;display:flex;border:1px solid #0f9;min-width:55px;min-height:24px;max-height:24px;line-height:15px;font-size:11px;font-family:consolas;align-items:center;justify-content:center;user-select:none;-moz-user-select:none;padding-left:1px;font-weight:500;user-select:none">play</div><div style="display:flex;border:1px solid #0f9;min-width:180px;min-height:24px;font-size:11px;font-family:consolas;color:#0f9;align-items:center;padding-left:6px;font-weight:500;position:relative;white-space:pre" id="attxdisplay">pitahaya.jollo.org</div><div class="unused" style="margin-left:5px;display:flex;border:1px solid #0f9;min-width:86px;max-width:86px;min-height:24px;font-size:11px;font-family:consolas;color:#0f9;align-items:center;padding-left:5px;user-select:none;font-weight:500"><input style="background:black;border:none;color:#0f9;width:70px;font-size:11px;font-family:consolas" placeholder="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /></div></div>`)
   
   let video
   let audio
@@ -767,16 +767,17 @@ let optical = (function() {
         videoframedecoder = new Worker(URL.createObjectURL(ovfdblob))
       }
       let streamavailable = false
-      
+      let attxdisplay = document.getElementById("attxdisplay")
       videoframedecoder.onmessage = function (event) {
         
         switch(event.data[1].mediatype) {
           case 0: {
             if (mime === "audio/mpeg") {
               // elimination.postMessage(event.data[0])
-              sourceBuffer.appendBuffer(event.data.buffer)
+              sourceBuffer.appendBuffer(event.data[0])
             }
             else {
+              attxdisplay.innerHTML = "proc " + event.data[0].length
               encapsulation.postMessage(event.data[0])
             }            
             break
@@ -846,13 +847,11 @@ let optical = (function() {
   let togglebutton = document.getElementById('togglebutton')
   function toggle() {
     if (!started) {
-      togglebutton.innerHTML = ""
-      togglebutton.classList.add("pause")
+      togglebutton.innerHTML = "pause"
       start()
     }
     else {
-      togglebutton.innerHTML = "&#9654"
-      togglebutton.classList.remove("pause")
+      togglebutton.innerHTML = "play"
       stop()
     }
   }

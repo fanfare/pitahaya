@@ -631,7 +631,7 @@ let optical = (function() {
       if (!found) {
         return null
       }
-      if (!responsearray) {
+      if (!responsearray || lastframebitstatus == 1) {
         responsearray = new Uint8Array(something.length)
       }
       for (let i=0;i<something.length;i++) {

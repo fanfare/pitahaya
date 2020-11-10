@@ -8,17 +8,19 @@ If running windows, get [cygwin](https://cygwin.com) to run the commands.
 ~~~
 #### Encoding
 The following command will convert the uncompressed file [audio.flac](https://github.com/fanfare/pitahaya/raw/master/au/audio.flac) into the video `output.mp4`. The video will contain an uncompressed copy of the .flac file in the video channel, and an audible copy of the audio in the audio channel.
-> ffmpeg -i audio.flac \
+
+> ffmpeg -nostats -loglevel 0 \
+> -i audio.flac \
 > -f s16le -acodec pcm_s16le \
 > -ar 44100 -ac 2 - \
-> | pitahaya --tx pcm \
-> | ffmpeg -nostats -loglevel 0 \
-> -i audio.flac \
+> | node . --tx pcm \
+> | ffmpeg -i audio.flac \
 > -framerate 10 -f rawvideo \
 > -pixel_format rgba -video_size 1920x1080 \
-> -i - -c:v libx264 \
-> -crf 28 -preset veryfast \
+> -i - -shortest -c:v libx264 \
+> -crf 31 -preset medium \
 > -r 10 -g 20 -f flv - > output.mp4
+
 After running the command, you will now have the file `output.mp4` which can be uploaded to youtube as a normal 1080p video. 
 ~~~~
 #### Decoding
@@ -27,13 +29,17 @@ The above encoded video can be found on youtube [here](https://youtu.be/pnNplEbo
 which will save the video as `outputcopy.mp4`. Click [here](youtubedlerrors.html) if you get any errors.
 \
 You can now extract the uncompressed audio data from the video by running the following command:
-> ffmpeg -i outputcopy.mp4 \
+
+> ffmpeg -nostats -loglevel 0 \
+> -i output.mp4 \
 > -vcodec rawvideo -pix_fmt rgba \
 > -r 20 -f rawvideo - \
-> | pitahaya --rx pcm \
-> | ffmpeg -y -nostats -loglevel 0 \
-> -f s16le -ar 44100 -ac 2 -i - \
+> | node . --rx pcm \
+> | ffmpeg -y \
+> -nostats -loglevel 0 -f s16le \
+> -ar 44100 -ac 2 -i - \
 > -f flac audiocopy.flac
+
 After running the command, you will now have the file `audiocopy.flac` which will have the same audio data as the original file `audio.flac`.
 ~~~
 #### Notes

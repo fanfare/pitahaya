@@ -560,12 +560,12 @@ let optical = (function() {
       }
       abmode = ofvstatus
       let ubxl = usablebuffer.length
-      var lastframebitstatus = gatheratpoint(50,0,0,1)
+      var lastframebitstatus = gatheratpoint(51,0,0,1)
       
       if (lastframebitstatus == 1) {
         let realbitspace = ""
         for (let i=0;i<24;i++) {
-          realbitspace += gatheratpoint(i+26,0,0,1)
+          realbitspace += gatheratpoint(i+27,0,0,1)
         }
         realbitspace = parseInt(realbitspace,2)
         if (realbitspace <= bitspace) {

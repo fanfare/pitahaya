@@ -2,9 +2,11 @@
 ~~~
 [back home](index.html)
 ~~~
-### Live streaming
+### Live streaming in privacy mode
 Requires: [ffmpeg](https://ffmpeg.org/download.html), [node.js](https://nodejs.org/en/), [streamlink](https://streamlink.github.io/install.html), [vlc](https://www.videolan.org/vlc/index.html) \
 If running windows, install [cygwin](https://cygwin.com) to run the commands on this page.
+~~~
+With Pitahaya, you can transmit audio data in real time over the video channel of a live stream.. the video will appear silent to anyone not decoding the stream with Pitahaya.
 ~~~
 #### Encoding
 The following command will take the file [audio.flac](https://github.com/fanfare/pitahaya/raw/master/au/audio.flac) and live stream it to youtube as a 128 kbps MP3 in real time over the video channel. The live stream will have no audible sound in the audio channel. Be sure to replace the string `abcd-efgh-ijkl-mnop-qrst` with your youtube live streaming key found on your [live dashboard](http://youtube.com/live_dashboard) page.
@@ -29,7 +31,7 @@ After running the command, wait a moment and you will see the stream start to be
 Alternatively, if you want to live stream audio from audio playing on your desktop computer, rather than from a file, you can find the command to do that [here](livestreamingdesktop.html).
 ~~~~
 #### Decoding
-To decode an mp3 live stream, e.g. [https://youtu.be/KQJsNQU51ls](https://youtu.be/KQJsNQU51ls), via the command line (you can tell it is an mp3 live streaming video if the maximum resolution is 360p) you would run the following command:
+Privacy mode live streams can be decoded directly within the browser with the [bookmarklet](bookmarklet.html) or through the command line. To decode a live stream from the command line, e.g. [https://youtu.be/KQJsNQU51ls](https://youtu.be/KQJsNQU51ls), (you can tell it is in privacy mode if there is no sound and if the maximum resolution is 360p) you would run the following command:
 > streamlink --quiet \
 > https://youtu.be/KQJsNQU51ls 360p -o - \
 > | ffmpeg -nostats -loglevel 0 \

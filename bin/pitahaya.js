@@ -3,12 +3,14 @@
 let tx = {
   pcm: {
     mediatype:     1,        
-    incomingbytes: 17640,  
+    incomingbytes: 17640,
+    outgoingbytes: 8294400,
     protectedbit:  0     
   },
   mp3: {
     mediatype:     0,        
     incomingbytes: 2000,
+    outgoingbytes: 921600,
     protectedbit:  0     
   }
 }
@@ -16,11 +18,13 @@ let tx = {
 let rx = {
   pcm: {
     mediatype:     1,
-    incomingbytes: 8294400
+    incomingbytes: 8294400,
+    outgoingbytes: 17640
   },
   mp3: {
     mediatype:     0,
-    incomingbytes: 921600
+    incomingbytes: 921600,
+    outgoingbytes: 2000
   }
 }
 
@@ -33,6 +37,11 @@ const usage = `usage: pitahaya [--tx|--rx] [options]
                [options]
                     mp3
                     pcm`
+
+if (args[0] === "-v") {
+  console.error("version 0.1.4")
+  return null
+}
 
 let method = args[1]
 if (!method || (method !== "pcm" && method !== "mp3")) {

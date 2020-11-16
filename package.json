@@ -1,6 +1,6 @@
 {
   "name": "pitahaya",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "Encode and decode binary data over a video channel",
   "main": "bin/pitahaya.js",
   "bin": {
@@ -24,8 +24,5 @@
   "bugs": {
     "url": "https://github.com/fanfare/pitahaya/issues"
   },
-  "homepage": "https://github.com/fanfare/pitahaya#readme",
-  "dependencies": {
-    "stream-throttle": "^0.1.3"
-  }
+  "homepage": "https://github.com/fanfare/pitahaya#readme"
 }

@@ -39,7 +39,7 @@ const usage = `usage: pitahaya [--tx|--rx] [options]
                     pcm`
 
 if (args[0] === "-v") {
-  console.error("version 0.1.4")
+  console.error("version 0.1.6")
   return null
 }
 

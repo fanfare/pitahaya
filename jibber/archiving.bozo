@@ -3,10 +3,10 @@
 [back home](index.html)
 ~~~
 ### Archiving uncompressed audio
-Requires: [ffmpeg](https://ffmpeg.org/download.html), [node.js](https://nodejs.org/en/), [python](https://www.python.org/downloads/), [youtube-dlc](https://pypi.org/project/youtube-dlc)\
+Requires: [ffmpeg](https://ffmpeg.org/download.html), [node.js](https://nodejs.org/en/), [python](https://www.python.org/downloads/), [youtube-dlc](https://pypi.org/project/youtube-dlc/)\
 If running windows, get [cygwin](https://cygwin.com) to run the commands.
 ~~~
-Suppose you want to release some uncompressed music on youtube. There really isn't a way to do this natively on Youtube -- the music in the audio channel will be compressed once you upload your video file. However with Pitahaya, you can use the video channel to store the uncompressed audio data. A listener can listen to your track on youtube, and if they like it and want a hard copy, they can download the video with youtube-dl as normal, but can now extract the uncompressed audio from the video channel with pitahaya, getting the music in its original quality.
+Suppose you want to release some uncompressed music on youtube. There really isn't a way to do this natively on Youtube -- the music in the audio channel will be compressed once you upload your video file. However with Pitahaya, you can use the video channel to store the uncompressed audio data. A listener can listen to your track on youtube, and if they like it and want a hard copy, they can download the video with youtube-dlc as normal, but can now extract the uncompressed audio from the video channel with pitahaya, getting the music in its original quality.
 ~~~
 #### Encoding
 This command will convert the 16 bit 44.1 kHz uncompressed audio file [audio.flac](https://github.com/fanfare/pitahaya/raw/master/au/audio.flac) into the video `output.mp4`. The video will contain an uncompressed copy of the .flac file in the video channel, and an audible copy of the audio in the audio channel.
@@ -22,14 +22,15 @@ This command will convert the 16 bit 44.1 kHz uncompressed audio file [audio.fla
 > -crf 31 -preset veryfast \
 > -r 10 -g 20 -f flv output.mp4
 After running the command, you will now have the file `output.mp4` which can be uploaded to youtube as a normal 1080p video. 
-\Note: the mp4 filesize will likely be large, averaging just under 100 megabytes per minute of audio. Smaller files can be achieved by changing `veryfast` to `medium`, `slow` or `slower` but those settings will take longer to encode.
 \
-Also note that this will overwrite any instance of 'output.mp4' that may already exist in the directory.
+Note: the mp4 filesize will likely be large, averaging just under 100 megabytes per minute of audio. Smaller files can be achieved by changing `veryfast` to `medium`, `slow` or `slower` but those settings will take longer to encode.
+\
+Also note that this will overwrite any instance of `output.mp4` that may already exist in the directory.
 ~~~~
 #### Decoding
 The above encoded video can be found on youtube [here](https://youtu.be/pnNplEbofGo). You can download it with youtube-dlc by running 
 > youtube-dlc -f 137 -o "outputcopy.mp4" https://youtu.be/pnNplEbofGo
-which will save the video as `outputcopy.mp4`. Click [here](youtubedlerrors.html) if you get any errors.
+which will save the video as `outputcopy.mp4`. Click [here](youtubedlcerrors.html) if you get any errors.
 \
 You can now extract the uncompressed audio data from the video by running the following command:
 > ffmpeg -nostats -loglevel 0 \

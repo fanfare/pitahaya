@@ -883,17 +883,25 @@ let optical = (function() {
     let systemready = false
     let everinitialized = false
     let everstarted = false
+    let evertimerange = false
+    
     function onUpdateEnd() {
       updating = false
       if (!everstarted && everresolved) {
+        mediaresource.onprogress = function() {
+          if (!evertimerange) {
+            if ( mediaresource.buffered 
+              && mediaresource.buffered.length === 1 ) {
+              evertimerange = true
+              let time = mediaresource.buffered.start(0)
+              mediaresource.currentTime = time
+              mediaresource.play()
+              mediaresource.onprogress = null
+            }            
+          }
+        }
         everstarted = true
-        setTimeout(()=>{
-          let time = mediaresource.buffered.start(0)
-          mediaresource.currentTime = time
-          mediaresource.play()          
-        },2500)
-
-      }  
+      } 
       if (!mediasegments.length) {
         return
       }

@@ -1204,9 +1204,9 @@ var optical = (function() {
   let attxinput = document.getElementById('attxinput')
   function toggle() {
     if (!started) {
-      attxdisplay.innerHTML = "LOADING"
       let xstate = start()
       if (xstate) {
+        attxdisplay.innerHTML = "LOADING"
         pitahayax.classList.add("enabled")
       }
     }

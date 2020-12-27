@@ -35,16 +35,18 @@ let rx = {
 let args = process.argv.slice(2)
 let params
 
-const usage = `usage: pitahaya [--tx|--rx] [options]
+const usage = `usage: pitahaya [--tx|--rx] [options] [extra]
                    -e, --tx, --encode
                    -d, --rx, --decode
                [options]
                     mp3
                     pcm
-                    avc`
+                    avc
+               [extra]
+                    phrase`
 
 if (args[0] === "-v") {
-  console.error("version 0.1.7")
+  console.error("version 0.2.0")
   return null
 }
 
@@ -59,6 +61,10 @@ switch (args[0]) {
   case '--tx':
   case '--encode':
     params = tx[method]
+    if (args[2]) {
+      params.protectedbit = 1
+      params.phrase = args[2]
+    }
     switch(method) {
       case 'avc': {
         require('../lib/parseavc.js')("tx", params)
@@ -74,6 +80,10 @@ switch (args[0]) {
   case '--rx':
   case '--decode':
     params = rx[method]
+    if (args[2]) {
+      params.protectedbit = 1
+      params.phrase = args[2]
+    }
     require('../lib/parse.js')("rx", params)
     break;
   default:

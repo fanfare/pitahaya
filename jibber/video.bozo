@@ -6,11 +6,10 @@
 Requires: [ffmpeg](https://ffmpeg.org/download.html), [node.js](https://nodejs.org/en/), [streamlink](https://streamlink.github.io/install.html), [vlc](https://www.videolan.org/vlc/index.html) \
 If running windows, install [cygwin](https://cygwin.com) to run the commands on this page.
 ~~~
-Pitahaya version `0.1.7` added support for live streaming video using H.264/AVC. The browser bookmarklet `0.1.7` is also capable of decoding the video stream in real time. Video content encoded with Pitahaya must be encoded from a source playing in 'real time' and must adhere to a very specific format.
+Pitahaya version `0.2.0` includes support for live streaming video using H.264/AVC. The browser [bookmarklet](bookmarklet.html) `0.2.0` is also capable of decoding the video stream in real time. Video content encoded with Pitahaya must be encoded from a 'real time' source and must adhere to a very specific format detailed below.
 ~~~
-The following command will live stream the input file `input.avi` to the a remote destination. Be sure to replace the string `abcd-efgh-ijkl-mnop-qrst` with your youtube live streaming key found on your [live dashboard](http://youtube.com/live_dashboard) page. Note that this is more bandwidth intensive than standard 'privacy mode' live streaming.
-
-> ffmpeg -re -i input.avi -vf \
+The following command will live stream the input file `input.avi` to the a remote destination. Be sure to replace the string `abcd-efgh-ijkl-mnop-qrst` with your youtube live streaming key found on your [live dashboard](http://youtube.com/live_dashboard) page. (Note that this is a bit more bandwidth intensive than standard mp3 'privacy mode' live streaming)
+> ffmpeg -nostats -loglevel 0 -re -i input.avi -vf \
 > "scale=196:110:force_original_aspect_ratio=decrease,pad=196:110:(ow-iw)/2:(oh-ih)/2" \
 > -ar 44100 -ac 2 -c:v huffyuv -acodec pcm_s16le -r 30 -y -f avi - \
 > | ffmpeg -nostats -loglevel 0 -i - -g 51 -c:a aac \
@@ -31,15 +30,13 @@ If you would rather encode a video locally instead of streaming to a source, rep
 
 > -preset slow -r 30 -g 60 -f flv - > output.mp4
 
-You can determine if a Pitahaya encoded video is operating in `avc` mode if the resolution is `360p` and the size of the pixels in the encoded video are `2x2` rather than `4x3`. 
+Play back a video using the [bookmarklet](bookmarklet.html), or using the same command as if you were decoding an mp3 encoded live stream. (either `mp3` or `avc` will work).
 
-Play back a video using the bookmarklet, or using the command below
-
-streamlink --quiet \
-https://youtu.be/KQJsNQU51ls 360p -o - \
-| ffmpeg -nostats -loglevel 0 \
--i - -vcodec rawvideo \
--pix_fmt rgba \
--r 16 -f rawvideo - \
-| pitahaya --rx avc \
-| vlc -
+> streamlink --quiet \
+> https://youtu.be/1vbL8CBC8bE 360p -o - \
+> | ffmpeg -nostats -loglevel 0 \
+> -i - -vcodec rawvideo \
+> -pix_fmt rgba \
+> -r 16 -f rawvideo - \
+> | pitahaya --rx mp3 \
+> | vlc -q -

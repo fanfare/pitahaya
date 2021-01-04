@@ -1,13 +1,14 @@
-# |https://f001.backblazeb2.com/file/flower/anim.gif Pitahaya
+# Pitahaya
 ~~~
-[back to live streaming](livestreaming.html) | [back home](index.html)
+[home](http://jollo.org/LNT/doc/pitahaya) | [info](info.html) | [audio](audio.html) | audiodesktop
 ~~~
-### Live streaming in privacy mode from the desktop | Encoding
-Requires: [ffmpeg](https://ffmpeg.org/download.html), [node.js](https://nodejs.org/en/)
-\
-If running windows, install [cygwin](https://cygwin.com) to run the commands on this page.
+## Live streaming audio from the desktop
 ~~~
-If you want to live stream in privacy mode via Pitahaya using the audio playing on your desktop rather than from a file, there are a few different ways to do this..
+If you want to live stream audio playing on your desktop rather than from a file, there are a few different ways to do this..
+~~~
+### Encoding
++ Requires: [ffmpeg](https://ffmpeg.org/download.html), [node.js](https://nodejs.org/en/)
++ If running windows, install [cygwin](https://cygwin.com) to run the commands on this page.
 ~~~
 #### Windows
 Requires:

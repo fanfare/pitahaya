@@ -1,6 +1,6 @@
 {
   "name": "pitahaya",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Encode and decode binary data over a video channel",
   "main": "bin/pitahaya.js",
   "bin": {

@@ -1,0 +1,51 @@
+# Pitahaya
+~~~
+[home](http://jollo.org/LNT/doc/pitahaya) | [info](info.html) | audio
+~~~
+## Live streaming audio
+~~~
+You can use Pitahaya to stream high quality audio in real time over a video channel. The video will appear silent to anyone not decoding the stream.
+~~~
+### Encoding
++ Requires: [ffmpeg](https://ffmpeg.org/download.html) and [node.js](https://nodejs.org/en/).
++ If running windows, install [cygwin](https://cygwin.com) to run the commands on this page.
+The following command will take the file [audio.flac](https://github.com/fanfare/pitahaya/raw/master/au/audio.flac) and live stream it to youtube as a 128 kbps MP3 over the video channel.
+Be sure to replace the string `abcd-efgh-ijkl-mnop-qrst` with your youtube live streaming key found on your [live dashboard](http://youtube.com/live_dashboard) page.
+> ffmpeg -nostats -loglevel 0 \
+> -re -i audio.flac \
+> -f s16le -acodec pcm_s16le -ar 44100 -ac 2 - \
+> | ffmpeg -nostats -loglevel 0 \
+> -f s16le -ar 44100 -ac 2 -i - \
+> -acodec libmp3lame -b:a 128k -f mp3 - \
+> | pitahaya --tx mp3 \
+> | ffmpeg -f lavfi \
+> -i anullsrc=channel_layout=stereo:sample_rate=44100 \
+> -framerate 8 -f rawvideo \
+> -pixel_format rgba -video_size 640x360 \
+> -i - -shortest -c:v libx264 \
+> -crf 31 -preset slow \
+> -r 8 -g 16 -f flv \
+> "rtmp://a.rtmp.youtube.com/live2/abcd-efgh-ijkl-mnop-qrst"
+After running the command, wait a moment and you will see the stream start to be received on the live dashboard page. It might give you a warning that the stream quality has an 'unsupported resolution' but you can ignore this warning. 
+It is probably best to set the stream latency to 'normal latency' on the live dashboard page to ensure the highest possible quality stream.
+\\
+Alternatively, if you want to live stream audio from audio playing on your desktop computer, rather than from a file, you can find the command to do that [here](audiodesktop.html).
+~~~~
+### Decoding in the browser
+Pitahaya encoded audio can be decoded and played back in the browser using the [bookmarklet](bookmarklet.html).
+~~~
+### Decoding via command line
++ Requires: [ffmpeg](https://ffmpeg.org/download.html), [node.js](https://nodejs.org/en/), and [streamlink](https://streamlink.github.io/install.html).
+Decode audio with the following command: (replace `abcdefghijk` with a valid youtube url path)
+> streamlink --quiet \
+> https://youtu.be/abcdefghijk 360p -o - \
+> | ffmpeg -nostats -loglevel 0 \
+> -i - -vcodec rawvideo \
+> -pix_fmt rgba \
+> -r 16 -f rawvideo - \
+> | pitahaya --rx 360p \
+> | ffplay -nostats -loglevel 0 -
+~~~
+### Encryption
+If you want to password protect the audio transmission, add a passphrase via `pitahaya --tx mp3 somepassphrase` when encoding or `pitahaya --rx 360p somepassphrase` when decoding.
+You can also type the passphrase in the bookmarklet's input field if you want to decrypt the audio in the browser.

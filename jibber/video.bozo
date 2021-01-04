@@ -1,14 +1,17 @@
-# |https://f001.backblazeb2.com/file/flower/anim.gif Pitahaya
+# Pitahaya
 ~~~
-[back home](index.html)
+[home](http://jollo.org/LNT/doc/pitahaya) | [info](info.html) | video
 ~~~
-### H.264 video in privacy mode
-Requires: [ffmpeg](https://ffmpeg.org/download.html), [node.js](https://nodejs.org/en/), [streamlink](https://streamlink.github.io/install.html), [vlc](https://www.videolan.org/vlc/index.html) \
-If running windows, install [cygwin](https://cygwin.com) to run the commands on this page.
+## Live streaming video
 ~~~
-Pitahaya version `0.2.0` includes support for live streaming video using H.264/AVC. The browser [bookmarklet](bookmarklet.html) `0.2.0` is also capable of decoding the video stream in real time. Video content encoded with Pitahaya must be encoded from a 'real time' source and must adhere to a very specific format detailed below.
+Pitahaya version `0.2.0` began including support for live streaming h.264 video. The browser bookmarklet is also capable of decoding a video stream in real time ([more bookmarklet info](bookmarklet.html)).
+Video content encoded with Pitahaya is encoded in 'real time' and must adhere to a very specific format detailed below.
 ~~~
-The following command will live stream the input file `input.avi` to the a remote destination. Be sure to replace the string `abcd-efgh-ijkl-mnop-qrst` with your youtube live streaming key found on your [live dashboard](http://youtube.com/live_dashboard) page. (Note that this is a bit more bandwidth intensive than standard mp3 'privacy mode' live streaming)
+### Encoding
++ Requires: [ffmpeg](https://ffmpeg.org/download.html) and [node.js](https://nodejs.org/en/). 
++ If running windows, install [cygwin](https://cygwin.com) to run the commands on this page.
+\\
+The following command will live stream the input file `input.avi` to YouTube. Be sure to replace the string `abcd-efgh-ijkl-mnop-qrst` with your youtube live streaming key found on your [live dashboard](http://youtube.com/live_dashboard) page.
 > ffmpeg -nostats -loglevel 0 -re -i input.avi -vf \
 > "scale=196:110:force_original_aspect_ratio=decrease,pad=196:110:(ow-iw)/2:(oh-ih)/2" \
 > -ar 44100 -ac 2 -c:v huffyuv -acodec pcm_s16le -r 30 -y -f avi - \
@@ -17,26 +20,30 @@ The following command will live stream the input file `input.avi` to the a remot
 > -pix_fmt yuv420p -preset medium -b 64k -minrate 34k -maxrate 64k -bufsize 128k \
 > -tune zerolatency -flags +cgop+low_delay -f mp4 -movflags \
 > empty_moov+omit_tfhd_offset+frag_keyframe+default_base_moof - \
-> | pitahaya --tx avc | ffmpeg -nostats -loglevel 0 -f lavfi \
+> | pitahaya --tx avc \
+> | ffmpeg -nostats -loglevel 0 -f lavfi \
 > -i anullsrc=channel_layout=stereo:sample_rate=44100 -framerate 4 \
 > -f rawvideo -pixel_format rgba -video_size 640x360 -i - -vcodec rawvideo -pix_fmt rgba \
-> -r 30 -f rawvideo - | ffmpeg -nostats -loglevel 0 -f lavfi \
+> -r 30 -f rawvideo - | ffmpeg -f lavfi \
 > -i anullsrc=channel_layout=stereo:sample_rate=44100 -framerate 30 \
 > -f rawvideo -pixel_format rgba -video_size 640x360 -i - -shortest \
-> -c:v libx264 -pix_fmt yuv420p -crf 26 \
+> -c:v libx264 -pix_fmt yuv420p -crf 27 \
 > -preset slow -r 30 -g 60 -f flv "rtmp://a.rtmp.youtube.com/live2/abcd-efgh-ijkl-mnop-qrst"
-
-If you would rather encode a video locally instead of streaming to a source, replace the last line in the command above with the following:
-
-> -preset slow -r 30 -g 60 -f flv - > output.mp4
-
-Play back a video using the [bookmarklet](bookmarklet.html), or using the same command as if you were decoding an mp3 encoded live stream. (either `mp3` or `avc` will work).
-
+~~~
+### Decoding in the browser
+Pitahaya encoded video can be decoded and played back in the browser using the [bookmarklet](bookmarklet.html).
+~~~
+### Decoding via command line
++ Requires: [ffmpeg](https://ffmpeg.org/download.html), [node.js](https://nodejs.org/en/), and [streamlink](https://streamlink.github.io/install.html).
+Decode a video with the following command: (replace `abcdefghijk` with a valid youtube url path)
 > streamlink --quiet \
-> https://youtu.be/1vbL8CBC8bE 360p -o - \
+> https://youtu.be/abcdefghij 360p -o - \
 > | ffmpeg -nostats -loglevel 0 \
 > -i - -vcodec rawvideo \
 > -pix_fmt rgba \
 > -r 16 -f rawvideo - \
-> | pitahaya --rx mp3 \
-> | vlc -q -
+> | pitahaya --rx 360p \
+> | ffplay -nostats -loglevel 0 -
+~~~
+### Encryption
+If you want to password protect the video transmission, add a passphrase via `pitahaya --tx avc somepassphrase` when encoding or `pitahaya --rx 360p somepassphrase` when decoding. You can also type the passphrase in the bookmarklet's input field if you want to decrypt the video in the browser.

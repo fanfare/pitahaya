@@ -20,6 +20,6 @@ Pitahaya can be used to live stream the following media types: (click the links 
 There is also an [archival mode](archiving.html) that can be used to transmit 16-bit 44.1kHz PCM audio, but it is not supported by the bookmarklet.
 Audio encoded in this mode can only be decoded with the node.js script. It uses a considerable amount of bandwidth (13000 kbps), and is not intended for live streaming. 
 ~~~
-The current version of Pitahaya is `0.2.1`
+The current version of Pitahaya is `0.2.2`
 \
-Page last updated January 3, 2021 by [fanfare](http://jollo.org/LNT/home/fanfare).
+Page last updated January 5, 2021 by [fanfare](http://jollo.org/LNT/home/fanfare).

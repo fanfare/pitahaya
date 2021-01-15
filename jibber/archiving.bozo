@@ -1,6 +1,6 @@
 # Pitahaya
 ~~~
-[home](http://jollo.org/LNT/doc/pitahaya) | [info](info.html) | archiving
+[home](http://jollo.org/LNT/doc/pitahaya) | [info](info.html) | [other](other.html) | archiving
 ~~~
 ## Archiving uncompressed audio
 + Requires: [ffmpeg](https://ffmpeg.org/download.html) and [node.js](https://nodejs.org/en/).

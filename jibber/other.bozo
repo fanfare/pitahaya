@@ -1,0 +1,10 @@
+# Pitahaya
+~~~
+[home](http://jollo.org/LNT/doc/pitahaya) | [info](info.html) | other
+~~~
+## Additional modes
+~~~
+In addition to the primary [media](info.html) modes, there are two additional data transfer modes
+++ mode + data type + use case + outgoing bandwidth + encryption + bookmarklet support + live streaming + notes
++ [archival](archiving.html) + 16-bit 44.1kHz PCM audio @ 1411 kbps + storing uncompressed audio + 13000 kbps + optional + no + not recommended + `1080p` resolution output video
++ [low bandwidth](com.html) + raw binary @ 2.56 kbps + general purpose data relay + 50 kbps + optional + no + yes + `144p` resolution output video w/yellow bar at top

@@ -25,10 +25,12 @@ The following command will live stream the input file `input.avi` to YouTube. Be
 > -i anullsrc=channel_layout=stereo:sample_rate=44100 -framerate 4 \
 > -f rawvideo -pixel_format rgba -video_size 640x360 -i - -vcodec rawvideo -pix_fmt rgba \
 > -r 30 -f rawvideo - | ffmpeg -f lavfi \
-> -i anullsrc=channel_layout=stereo:sample_rate=44100 -framerate 30 \
+> -i anullsrc=channel_layout=stereo:sample_rate=11025 -framerate 30 \
 > -f rawvideo -pixel_format rgba -video_size 640x360 -i - -shortest \
 > -c:v libx264 -pix_fmt yuv420p -crf 27 \
-> -preset slow -r 30 -g 60 -f flv "rtmp://a.rtmp.youtube.com/live2/abcd-efgh-ijkl-mnop-qrst"
+> -preset slow -r 30 -g 60 -f flv \
+> "rtmp://a.rtmp.youtube.com/live2/abcd-efgh-ijkl-mnop-qrst"
+Note that you can stream to different servers, e.g. Twitch, by replacing the rtmp url on the last line, e.g. `"rtmp://hou.contribute.live-video.net/app/TWITCHSTREAMKEY"`
 ~~~
 ### Decoding in the browser
 Pitahaya encoded video can be decoded and played back in the browser using the [bookmarklet](bookmarklet.html).

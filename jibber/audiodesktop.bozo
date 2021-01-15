@@ -28,11 +28,11 @@ To live stream, run the following command, replacing `abcd-efgh-ijkl-mnop-qrst` 
 > | pitahaya --tx mp3 \
 > | ffmpeg -nostats -loglevel 0 \
 > -f lavfi \
-> -i anullsrc=channel_layout=stereo:sample_rate=44100 \
+> -i anullsrc=channel_layout=stereo:sample_rate=11025 \
 > -framerate 8 -f rawvideo \
 > -pixel_format rgba -video_size 640x360 \
 > -i - -shortest -c:v libx264 \
-> -crf 31 -preset slow \
+> -crf 32 -pix_fmt yuv420p -preset slow \
 > -r 8 -g 16 -f flv \
 > "rtmp://a.rtmp.youtube.com/live2/abcd-efgh-ijkl-mnop-qrst"
 ~~~
@@ -49,11 +49,11 @@ Please refer to the ffmpeg documentation page for [capturing audio](https://trac
 > | pitahaya --tx mp3 \
 > | ffmpeg -nostats -loglevel 0 \
 > -f lavfi \
-> -i anullsrc=channel_layout=stereo:sample_rate=44100 \
+> -i anullsrc=channel_layout=stereo:sample_rate=11025 \
 > -framerate 8 -f rawvideo \
 > -pixel_format rgba -video_size 640x360 \
 > -i - -shortest -c:v libx264 \
-> -crf 31 -preset slow \
+> -crf 32 -pix_fmt yuv420p -preset slow \
 > -r 8 -g 16 -f flv \
 > "rtmp://a.rtmp.youtube.com/live2/abcd-efgh-ijkl-mnop-qrst"
 ##### pulse
@@ -67,11 +67,11 @@ Please refer to the ffmpeg documentation page for [capturing audio](https://trac
 > | pitahaya --tx mp3 \
 > | ffmpeg -nostats -loglevel 0 \
 > -f lavfi \
-> -i anullsrc=channel_layout=stereo:sample_rate=44100 \
+> -i anullsrc=channel_layout=stereo:sample_rate=11025 \
 > -framerate 8 -f rawvideo \
 > -pixel_format rgba -video_size 640x360 \
 > -i - -shortest -c:v libx264 \
-> -crf 31 -preset slow \
+> -crf 32 -pix_fmt yuv420p -preset slow \
 > -r 8 -g 16 -f flv \
 > "rtmp://a.rtmp.youtube.com/live2/abcd-efgh-ijkl-mnop-qrst"
 ##### avfoundation
@@ -82,11 +82,11 @@ Please refer to the ffmpeg documentation page for [capturing audio](https://trac
 > | pitahaya --tx mp3 \
 > | ffmpeg -nostats -loglevel 0 \
 > -f lavfi \
-> -i anullsrc=channel_layout=stereo:sample_rate=44100 \
+> -i anullsrc=channel_layout=stereo:sample_rate=11025 \
 > -framerate 8 -f rawvideo \
 > -pixel_format rgba -video_size 640x360 \
 > -i - -shortest -c:v libx264 \
-> -crf 31 -preset slow \
+> -crf 32 -pix_fmt yuv420p -preset slow \
 > -r 8 -g 16 -f flv \
 > "rtmp://a.rtmp.youtube.com/live2/abcd-efgh-ijkl-mnop-qrst"
 

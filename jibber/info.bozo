@@ -10,7 +10,7 @@ First, install [node.js](https://node.js.org) and [ffmpeg](https://ffmpeg.org/do
 Or get the [source](https://github.com/fanfare/pitahaya).
 ~~~
 Once you have the `pitahaya` node.js script installed, you can use it to encode different types of media into 'scrambled' pitahaya video.
-The scrambled video can be live streamed in real time to a third party streaming site like YouTube. A viewer can then decode the video directly in the browser to play back the media using a bookmarklet.
+The scrambled video can be live streamed in real time to a third party streaming site like YouTube, Twitch, etc. A viewer can then decode the video directly in the browser to play back the media using a bookmarklet.
 Alternatively, the node.js script can also be used to decode scrambled videos.
 \\
 Pitahaya can be used to live stream the following media types: (click the links for specific encoding instructions)

@@ -18,8 +18,8 @@ The following command will transmit data from `stdin`
 > -r 30 -f rawvideo - | ffmpeg -f lavfi \
 > -i anullsrc=channel_layout=stereo:sample_rate=11025 -framerate 30 \
 > -f rawvideo -pixel_format rgba -video_size 256x144 -i - -shortest \
-> -c:v libx264 -pix_fmt yuv420p -crf 27 \
-> -preset slow -r 30 -g 60 -f flv \
+> -c:v libx264 -pix_fmt yuv420p -crf 37 \
+> -preset veryslow -r 30 -g 60 -f flv \
 > "rtmp://a.rtmp.youtube.com/live2/abcd-efgh-ijkl-mnop-qrst"
 Note that you can stream to different servers, e.g. Twitch, by replacing the rtmp url on the last line, e.g. `"rtmp://hou.contribute.live-video.net/app/TWITCHSTREAMKEY"`
 ~~~

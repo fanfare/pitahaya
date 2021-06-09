@@ -1,5 +1,10 @@
 ;
 var optical = (function() {
+  
+  // event emitter polyfill
+  // https://gist.github.com/mudge/5830382
+  
+  var indexOf;indexOf="function"==typeof Array.prototype.indexOf?function(t,e){return t.indexOf(e)}:function(t,e){for(var n=0,i=t.length,o=-1,s=!1;n<i&&!s;)t[n]===e&&(o=n,s=!0),n++;return o};var EventEmitter=function(){this.events={}};EventEmitter.prototype.on=function(t,e){"object"!=typeof this.events[t]&&(this.events[t]=[]),this.events[t].push(e)},EventEmitter.prototype.removeListener=function(t,e){var n;"object"==typeof this.events[t]&&(n=indexOf(this.events[t],e))>-1&&this.events[t].splice(n,1)},EventEmitter.prototype.emit=function(t){var e,n,i,o=[].slice.call(arguments,1);if("object"==typeof this.events[t])for(i=(n=this.events[t].slice()).length,e=0;e<i;e++)n[e].apply(this,o)},EventEmitter.prototype.once=function(t,e){this.on(t,function n(){this.removeListener(t,n),e.apply(this,arguments)})};  
 
   function encapsulatemp3insidemp4() {
     
@@ -7,7 +12,7 @@ var optical = (function() {
     // encapsulate cbr 128 kbps mp3 inside audio/mp4 
     // LNT http://jollo.org
 
-    const encapsulation = (function() {
+    this.encapsulation = (function() {
       function bumpsum(prev, pad, inc) {
         let hex = prev
         hex = "0x" + hex
@@ -172,7 +177,6 @@ var optical = (function() {
       let segment = ""
       
       const interlace = function(mp3bytearray) {
-
         s.push(...mp3bytearray)
         if (s.length < 2500) {
           return null
@@ -242,25 +246,26 @@ var optical = (function() {
       return {
         interlace
       }
-    })();
-
-    self.onmessage = function (event) {
-      let audiofragment = event.data
-      let mpeg = encapsulation.interlace(audiofragment)
-      if (mpeg) {
-        mpeg = Uint8Array.from(mpeg)
-        postMessage(mpeg)
-      }
+    })()
+    
+    this.events = new EventEmitter
+  }
+  
+  encapsulatemp3insidemp4.prototype.interlace = function(audiofragment) {
+    let mpeg = this.encapsulation.interlace(audiofragment)
+    if (mpeg) {
+      mpeg = Uint8Array.from(mpeg)
+      this.events.emit("mpeg", mpeg)
     }
   }
 
-  let enstr = encapsulatemp3insidemp4.toString()
-  enstr = enstr.substring(enstr.indexOf("{")+1, enstr.lastIndexOf("}"))
 
   function opticalvideoframedecodercontent() {
-  
     
+    this.phrase = null
+  
     // reed solomon encode/decode (https://github.com/louismullie/erc-js)
+    
     !function(){var t=!1,n=/xyz/.test(function(){xyz})?/\b_super\b/:/.*/;this.Class=function(){},Class.extend=function(i){var r=this.prototype;t=!0;var e=new this;for(var s in t=!1,i)e[s]="function"==typeof i[s]&&"function"==typeof r[s]&&n.test(i[s])?function(t,n){return function(){var i=this._super;this._super=r[t];var e=n.apply(this,arguments);return this._super=i,e}}(s,i[s]):i[s];function o(){!t&&this.init&&this.init.apply(this,arguments)}return o.prototype=e,o.prototype.constructor=o,o.extend=arguments.callee,o}}();var ReedSolomon=Class.extend({init:function(t){this.nSym=t||10,this.codec=new ReedSolomon.Codec},encode:function(t){for(var o=ReedSolomon.Utils.unpack(t),r=255-this.nSym,e=[],n=0;n<o.length;n+=r){var l=o.slice(n,n+r);e=e.concat(this.codec.encodeMsg(l,this.nSym))}return e},decode:function(t){for(var o=[],r=0;r<t.length;r+=255){var e=t.slice(r,r+255);o=o.concat(this.codec.correctMsg(e,this.nSym))}return ReedSolomon.Utils.pack(o)}});ReedSolomon.Utils={pack:function(t){for(var o=[],r=0,e=t.length;r<e;r++)o.push(String.fromCharCode(t[r]));return o.join("")},unpack:function(t){for(var o=[],r=0,e=t.length;r<e;r++)o.push(t.charCodeAt(r));return o},arrayFill:function(t,o){return Array.apply(null,new Array(t)).map(function(){return o})},sliceStep:function(t,o,r,e){for(var n=Array.prototype.slice.call(t,o,r),l=[],i=n.length-1;i>=0;i--)i%e==0&&l.push(n[i]);return l.reverse(),n=l}},ReedSolomon.GaloisField=Class.extend({gfExp:ReedSolomon.Utils.arrayFill(512,1),gfLog:ReedSolomon.Utils.arrayFill(256,0),init:function(){for(var t=1,o=1;o<255;o++)256&(t<<=1)&&(t^=285),this.gfExp[o]=t,this.gfLog[t]=o;for(o=255;o<512;o++)this.gfExp[o]=this.gfExp[o-255]},mul:function(t,o){return 0==t||0==o?0:this.gfExp[this.gfLog[t]+this.gfLog[o]]},div:function(t,o){if(0==o)throw"Division by zero.";return 0==t?0:this.gfExp[this.gfLog[t]+255-this.gfLog[o]]},polyScale:function(t,o){for(var r=[],e=0;e<t.length;e++)r.push(this.mul(t[e],o));return r},polyAdd:function(t,o){for(var r=t.length,e=o.length,n=Math.max(r,e),l=ReedSolomon.Utils.arrayFill(n,0),i=l.length,h=0;h<r;h++)l[h+i-r]=t[h];for(h=0;h<e;h++)l[h+i-e]^=o[h];return l},polyMul:function(t,o){for(var r=ReedSolomon.Utils.arrayFill(t.length+o.length-1,0),e=0;e<o.length;e++)for(var n=0;n<t.length;n++)r[n+e]^=this.mul(t[n],o[e]);return r},polyEval:function(t,o){for(var r=t[0],e=1;e<t.length;e++)r=this.mul(r,o)^t[e];return r}}),ReedSolomon.Codec=Class.extend({init:function(){this.gf=new ReedSolomon.GaloisField},generatorPoly:function(t){for(var o=[1],r=0;r<t;r++)o=this.gf.polyMul(o,[1,this.gf.gfExp[r]]);return o},encodeMsg:function(t,o){if(t.length+o>255)throw"Message too long.";for(var r=this.generatorPoly(o),e=ReedSolomon.Utils.arrayFill(t.length+o,0),n=0;n<t.length;n++)e[n]=t[n];for(n=0;n<t.length;n++){var l=e[n];if(0!=l)for(var i=0;i<r.length;i++)e[n+i]^=this.gf.mul(r[i],l)}for(n=0;n<t.length;n++)e[n]=t[n];return e},calcSyndromes:function(t,o){for(var r=[],e=0;e<o;e++)r.push(this.gf.polyEval(t,this.gf.gfExp[e]));return r},correctErrata:function(t,o,r){for(var e=[1],n=0;n<r.length;n++){var l=this.gf.gfExp[t.length-1-r[n]];e=this.gf.polyMul(e,[l,1])}var i=o.slice(0,r.length);i.reverse(),i=(i=this.gf.polyMul(i,e)).slice(i.length-r.length,i.length),e=ReedSolomon.Utils.sliceStep(e,1&e.length,e.length,2);for(n=0;n<r.length;n++){l=this.gf.gfExp[r[n]+256-t.length];var h=this.gf.polyEval(i,l),s=this.gf.polyEval(e,this.gf.mul(l,l));t[r[n]]^=this.gf.div(h,this.gf.mul(l,s))}return t},rsFindErrors:function(t,o){for(var r,e=[1],n=[1],l=0;l<t.length;l++){n.push(0);for(var i=t[l],h=1;h<e.length;h++)i^=this.gf.mul(e[e.length-1-h],t[l-h]);0!=i&&(n.length>e.length&&(r=this.gf.polyScale(n,i),n=this.gf.polyScale(e,this.gf.div(1,i)),e=r),e=this.gf.polyAdd(e,this.gf.polyScale(n,i)))}var s=e.length-1;if(2*s>t.length)throw"Too many errors to correct";var g=[];for(l=0;l<o;l++)0==this.gf.polyEval(e,this.gf.gfExp[255-l])&&g.push(o-1-l);return g.length!=s?null:g},forneySyndromes:function(t,o,r){for(var e=t.slice(0),n=0;n<o.length;n++){for(var l=this.gf.gfExp[r-1-o[n]],i=0;i<e.length-1;i++)e[i]=this.gf.mul(e[i],l)^e[i+1];e.pop()}return e},correctMsg:function(t,o){if(t.length>255)throw"Message too long";for(var r=t.slice(0),e=[],n=0;n<r.length;n++)r[n]<0&&(r[n]=0,e.push(n));if(e.length>o)throw"Too many erasures to correct";var l=this.calcSyndromes(r,o);if(0==Math.max.apply(null,l))return r.slice(0,r.length-o);var i=this.forneySyndromes(l,e,r.length),h=this.rsFindErrors(i,r.length);if(null==h)throw"Could not locate error";if(r=this.correctErrata(r,l,e.concat(h)),l=this.calcSyndromes(r,o),Math.max.apply(null,l)>0)throw"Could not correct message";return r.slice(0,-o)}});
 
     let phrase = null
@@ -346,7 +351,7 @@ var optical = (function() {
 
     const masks = ["", ""]
 
-    async function matrix(vfb) {
+    this.matrix = async (vfb) => {
       
       function gatheratpoint(x,y,offsety,collection) {
         
@@ -493,10 +498,7 @@ var optical = (function() {
         }
       }
       if (failure) {
-        postMessage({
-          type: "invalid",
-          data: null
-        })
+        this.events.emit("invalid", null)
         return null
       }
       var ofd = datacolumns - 4
@@ -608,12 +610,9 @@ var optical = (function() {
         }
         return value
       }      
-      async function gathercryptokey(salt, phrase) {
+      const gathercryptokey = async (salt, phrase) => {
         if (!phrase) {
-          postMessage({
-            type: "req",
-            data: null
-          })
+          this.events.emit("req", null)
           return null
         }
         var enc = new TextEncoder()
@@ -650,7 +649,7 @@ var optical = (function() {
         if (!cryptokey) {
           let salt = responsearray.slice(0,4)
           let xsalt = new Uint8Array(salt)
-          let xphrase = phrase
+          let xphrase = this.phrase
           cryptokey = await gathercryptokey(xsalt, xphrase)
         }
         let iv = responsearray.slice(4,20).buffer
@@ -667,10 +666,7 @@ var optical = (function() {
         let realsize = gphx.splice(0,4)
         realsize = readint(realsize)
         if (realsize > bitlockrealmaxbytes || realsize < 0) {
-          postMessage({
-            type: "fail",
-            data: null
-          })
+          this.events.emit("fail", null)
           return null
         }
         gphx = gphx.splice(0,realsize)
@@ -678,29 +674,29 @@ var optical = (function() {
       }
       return [responsearray, vparams, encfx]
     }
-    self.onmessage = async function (event) {
-      switch(event.data.type) {
-        case "bitmap": {
-          let arrayn = await matrix(event.data.data)
-          if (arrayn) {
-            postMessage({
-              type: "buffer",
-              data: arrayn
-            })
-          }        
-          break
+    
+    
+    this.events = new EventEmitter
+  }
+  
+  opticalvideoframedecodercontent.prototype.input = async function(data) {
+
+    switch(data.type) {
+      case "bitmap": {
+        let arrayn = await this.matrix(data.data)
+        if (arrayn) {
+          this.events.emit("buffer", arrayn)
         }
-        case "phrase": {
-          phrase = event.data.data
-          break
-        }
+        break
+      }
+      case "phrase": {
+        this.phrase = data.data
+        break
       }
     }
+  
   }
 
-  let ovfdstr = opticalvideoframedecodercontent.toString()
-  ovfdstr = ovfdstr.substring(ovfdstr.indexOf("{")+1, ovfdstr.lastIndexOf("}"))
-  
   let updatestats = false
   let starttoggle = false
 
@@ -709,15 +705,10 @@ var optical = (function() {
       return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2)
     }
   })  
-  if (typeof(Worker) === "undefined") {
-    alert("browser does not support webworkers")
-    return null
-  }
   if (!'MediaSource' in window) {
     alert("browser does not support the mediasource property")
     return null
   }  
-  
   var secinv = document.querySelector('#secondary-inner')
   if (secinv) {
     secinv.remove()
@@ -733,7 +724,8 @@ var optical = (function() {
   let mediaresource
   var videoframedecoder = null
   var clock = null
-  var encapsulation = null
+  
+  let encapsulation = null
   let phrase
   
   var canvas = document.createElement('canvas')
@@ -746,7 +738,7 @@ var optical = (function() {
       type: "phrase",
       data: document.getElementById("attxinputinput").value
     }
-    videoframedecoder.postMessage(data)  
+    videoframedecoder.input(data)  
   }
   let evertest = false
   function capturevideoframe() {
@@ -771,7 +763,7 @@ var optical = (function() {
       data: bitmapdata
     }
     let offset = null
-    videoframedecoder.postMessage(data)
+    videoframedecoder.input(data)
   }
   
   let started = false
@@ -959,10 +951,7 @@ var optical = (function() {
     }
     
     let internalcanvas = ""
-    if (videoframedecoder == null) {
-      var ovfdblob = new Blob([ovfdstr], {type: "application/javascript"})
-      videoframedecoder = new Worker(URL.createObjectURL(ovfdblob))
-    }
+    
     var mediasegments = []
     var assemblesegment = new Uint8Array([])
 
@@ -1060,114 +1049,108 @@ var optical = (function() {
         flush()
       }
     }    
-
-    videoframedecoder.onmessage = function (event) {
-      switch(event.data.type) {
-        case "buffer": {
-          if (mediasourcewaiting) {
-            mediasourcewaiting = false
-            encfx = event.data.data[2]
-            if (event.data.data[1].mediatype == 0) {
-              deploymediasource("mp3")
-            }
-            else if (event.data.data[1].mediatype == 2) {
-              framerate = 8
-              deploymediasource("avc")
-            }
-          }
-          if (!mediasourceready) {
-            mediatempqueue.push(event.data.data[0])
-            return        
-          }
-          function uint8concat(arrays) {
-            let totalLength = arrays.reduce((acc, value) => acc + value.length, 0)
-            if (!arrays.length) {
-              return null
-            }
-            let result = new Uint8Array(totalLength)
-            let length = 0;
-            for(let array of arrays) {
-              result.set(array, length)
-              length += array.length
-            }
-            return result
-          }
-          switch(event.data.data[1].mediatype) {
-            case 0: {
-              if (!firefox) {
-                if (mediatempqueue.length > 0) {
-                  mediatempqueue.push(event.data.data[0])
-                  let tempdata = uint8concat(mediatempqueue)
-                  sourceBuffer.appendBuffer(tempdata)
-                  mediatempqueue = []
-                }
-                else {
-                  sourceBuffer.appendBuffer(event.data.data[0])
-                }
-              }
-              else {
-                if (mediatempqueue.length > 0) {
-                  mediatempqueue.push(event.data.data[0])
-                  let tempdata = uint8concat(mediatempqueue)
-                  encapsulation.postMessage(tempdata)
-                  mediatempqueue = []
-                }
-                else {
-                  encapsulation.postMessage(event.data.data[0])
-                }
-              }            
-              break
-            }
-            case 1: {
-              break
-            }
-            case 2: {
-              if (mediatempqueue.length > 0) {
-                mediatempqueue = []
-              }
-              else {
-                newsegmentinterpretation(event.data.data[0])
-              }
-              break
-            }
-            default: {
-              break
-            }
-          }
-          break
-        }
-        case "fail": {
-          pitahayax.classList.remove("enabled")
-          attxdisplay.innerHTML = "BADPASS"
-          stop()
-          break
-        }
-        case "req": {
-          pitahayax.classList.remove("enabled")
-          attxdisplay.innerHTML = "NEEDSPASS"
-          stop()
-          break
-        }
-        case "invalid": {
-          pitahayax.classList.remove("enabled")
-          attxdisplay.innerHTML = "NOSOURCE"
-          stop()
-          break
-        }
-      }
-    }
     
-    if (encapsulation == null) {
-      var enblob = new Blob([enstr], {type: "application/javascript"})
-      encapsulation = new Worker(URL.createObjectURL(enblob))
-    }
+    encapsulation = new encapsulatemp3insidemp4
+    
     let everappended = false
-    encapsulation.onmessage = function (event) {
+    encapsulation.events.on("mpeg", function(mpeg) {
       if (!everappended) {
         everappended = true
       }
-      sourceBuffer.appendBuffer(event.data.buffer)
-    }
+      sourceBuffer.appendBuffer(mpeg)      
+    })
+    
+    videoframedecoder = new opticalvideoframedecodercontent
+    
+    videoframedecoder.events.on("buffer", async function(data) {
+      
+      if (mediasourcewaiting) {
+        mediasourcewaiting = false
+        encfx = data[2]
+        if (data[1].mediatype == 0) {
+          deploymediasource("mp3")
+        }
+        else if (data[1].mediatype == 2) {
+          framerate = 8
+          deploymediasource("avc")
+        }
+      }
+      if (!mediasourceready) {
+        mediatempqueue.push(data[0])
+        return        
+      }
+      function uint8concat(arrays) {
+        let totalLength = arrays.reduce((acc, value) => acc + value.length, 0)
+        if (!arrays.length) {
+          return null
+        }
+        let result = new Uint8Array(totalLength)
+        let length = 0;
+        for(let array of arrays) {
+          result.set(array, length)
+          length += array.length
+        }
+        return result
+      }
+      switch(data[1].mediatype) {
+        case 0: {
+          if (!firefox) {
+            if (mediatempqueue.length > 0) {
+              mediatempqueue.push(data[0])
+              let tempdata = uint8concat(mediatempqueue)
+              sourceBuffer.appendBuffer(tempdata)
+              mediatempqueue = []
+            }
+            else {
+              sourceBuffer.appendBuffer(data[0])
+            }
+          }
+          else {
+            if (mediatempqueue.length > 0) {
+              mediatempqueue.push(data[0])
+              let tempdata = uint8concat(mediatempqueue)
+              encapsulation.interlace(tempdata)
+              mediatempqueue = []
+            }
+            else {
+              encapsulation.interlace(data[0])
+            }
+          }            
+          break
+        }
+        case 1: {
+          break
+        }
+        case 2: {
+          if (mediatempqueue.length > 0) {
+            mediatempqueue = []
+          }
+          else {
+            newsegmentinterpretation(data[0])
+          }
+          break
+        }
+        default: {
+          break
+        }
+      }     
+    })
+    videoframedecoder.events.on("fail", (data) => {
+      pitahayax.classList.remove("enabled")
+      attxdisplay.innerHTML = "BADPASS"
+      stop()
+    })
+    videoframedecoder.events.on("req", (data) => {
+      pitahayax.classList.remove("enabled")
+      attxdisplay.innerHTML = "NEEDSPASS"
+      stop()
+    })
+    videoframedecoder.events.on("invalid", (data) => {
+      pitahayax.classList.remove("enabled")
+      attxdisplay.innerHTML = "NOSOURCE"
+      stop()
+    })
+    
     var cycletimeoutms = 1000 / framerate
     var expected
     var hasphrase = false
@@ -1206,13 +1189,11 @@ var optical = (function() {
     video.pause()
     clearTimeout(clock)
     if (videoframedecoder) {
-      videoframedecoder.terminate()
+      videoframedecoder = null
     }
     if (encapsulation) {
-      encapsulation.terminate()
+      encapsulation = null
     }
-    videoframedecoder = null
-    encapsulation = null
   }
   
   let togglebutton = document.getElementById('togglebutton')

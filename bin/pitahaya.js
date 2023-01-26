@@ -45,7 +45,7 @@ const usage = `usage: pitahaya --tx|--rx {params} [phrase]
                   -d, --rx, --decode     {144p|360p|1080p}`
 
 if (args[0] === "-v") {
-  console.error("version 0.2.4")
+  console.error("version 0.3")
   return null
 }
 

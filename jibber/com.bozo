@@ -4,13 +4,26 @@
 ~~~
 ## Low bandwidth mode
 ~~~
++ |https://jollo.org/com.gif
+~~~
 In this mode, you can transmit binary data @ 2.56 kbps in real time over a video signal. The signal blanks out when no data is being transmitted, saving additional bandwidth.
 ~~~
 ### Encoding
 + Requires: [ffmpeg](https://ffmpeg.org/download.html) and [node.js](https://nodejs.org/en/). 
 + If running windows, install [cygwin](https://cygwin.com) to run the commands on this page.
 \\
-The following command will transmit data from `stdin`
+The following command will transmit data from `stdin` to an ffplay window
+> pitahaya --tx com \
+> | ffmpeg -nostats -loglevel 0 -f lavfi \
+> -i anullsrc=channel_layout=stereo:sample_rate=44100 -framerate 8 \
+> -f rawvideo -pixel_format rgba -video_size 256x144 -i - -vcodec rawvideo -pix_fmt rgba \
+> -r 30 -f rawvideo - | ffmpeg -nostats -loglevel 0 -f lavfi \
+> -i anullsrc=channel_layout=stereo:sample_rate=11025 -framerate 30 \
+> -f rawvideo -pixel_format rgba -video_size 256x144 -i - -shortest \
+> -c:v libx264 -pix_fmt yuv420p -crf 37 \
+> -preset veryslow -r 30 -g 60 -f flv - \
+> | ffplay -nostats -loglevel 0 -
+The following command will live stream data from `stdin` to YouTube
 > pitahaya --tx com \
 > | ffmpeg -nostats -loglevel 0 -f lavfi \
 > -i anullsrc=channel_layout=stereo:sample_rate=44100 -framerate 8 \
